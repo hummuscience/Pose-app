@@ -43,38 +43,6 @@ def get_available_port(start_port: int, end_port: int, host: str = '0.0.0.0') ->
 
 class StreamlitFrontend(LitStreamlitFrontend):
     """Provide helpful print statements for where streamlit tabs are forwarded."""
-    
-    # Class-level port tracking
-    STREAMLIT_PORTS = {
-        'frame': range(7504, 7506),  # Try ports 7504-7505 for frame
-        'video': range(7506, 7508),  # Try ports 7506-7507 for video
-        'other': range(7508, 7510),  # Try ports 7508-7509 for other
-    }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def start_server(self, *args, **kwargs):
-        # Override host
-        kwargs['host'] = '0.0.0.0'
-        
-        # Determine port range based on instance type
-        if 'frame' in str(self):
-            port_range = self.STREAMLIT_PORTS['frame']
-        elif 'video' in str(self):
-            port_range = self.STREAMLIT_PORTS['video']
-        else:
-            port_range = self.STREAMLIT_PORTS['other']
-            
-        # Find available port
-        port = get_available_port(port_range.start, port_range.stop - 1)
-        if port is None:
-            _logger.warning(f"No ports available in range {port_range}. Using default port.")
-            port = 7506  # Fallback to default
-            
-        kwargs['port'] = port
-        super().start_server(*args, **kwargs)
-        _logger.info(f"Running streamlit on http://{kwargs['host']}:{kwargs['port']}")
 
 
 def get_frame_number(image_path: str) -> tuple:
