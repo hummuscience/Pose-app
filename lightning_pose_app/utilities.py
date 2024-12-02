@@ -30,16 +30,12 @@ class StreamlitFrontend(LitStreamlitFrontend):
         super().__init__(*args, **kwargs)
 
     def start_server(self, *args, **kwargs):
-        # Override port and host
-        kwargs['host'] = '0.0.0.0'
-        if 'frame' in str(self):
-            kwargs['port'] = 7504
-        elif 'video' in str(self):
-            kwargs['port'] = 7505
-        else:
-            kwargs['port'] = 7506
         super().start_server(*args, **kwargs)
-        _logger.info(f"Running streamlit on http://{kwargs['host']}:{kwargs['port']}")
+        try:
+            _logger.info(f"Running streamlit on http://{kwargs['host']}:{kwargs['port']}")
+        except Exception:
+            # on the cloud, args[0] = host, args[1] = port
+            pass
 
 
 def get_frame_number(image_path: str) -> tuple:
