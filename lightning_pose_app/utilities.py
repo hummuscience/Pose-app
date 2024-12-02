@@ -41,8 +41,21 @@ def get_available_port(start_port: int, end_port: int, host: str = '0.0.0.0') ->
             return port
     return None
 
+
+
 class StreamlitFrontend(LitStreamlitFrontend):
     """Provide helpful print statements for where streamlit tabs are forwarded."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def start_server(self, *args, **kwargs):
+        super().start_server(*args, **kwargs)
+        try:
+            _logger.info(f"Running streamlit on http://{kwargs['host']}:{kwargs['port']}")
+        except Exception:
+            # on the cloud, args[0] = host, args[1] = port
+            pass
 
 
 def get_frame_number(image_path: str) -> tuple:
