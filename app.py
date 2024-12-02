@@ -262,12 +262,12 @@ class LitPoseApp(LightningFlow):
 
     def start_tensorboard(self, logdir):
         """run tensorboard"""
-        cmd = f"tensorboard --logdir {logdir} --host $host --port $port --reload_interval 30"
+        cmd = f"tensorboard --logdir {logdir} --host 0.0.0.0 --port 7502 --reload_interval 30"
         self.tensorboard.run(cmd, wait_for_exit=False, cwd=os.getcwd())
 
     def start_fiftyone(self):
         """run fiftyone"""
-        cmd = "fiftyone app launch --address $host --port $port --remote --wait -1"
+        cmd = "fiftyone app launch --address 0.0.0.0 --port 7503 --remote --wait -1"
         self.fiftyone.run(cmd, wait_for_exit=False, cwd=os.getcwd())
 
     def update_trained_models_list(self, timer):
