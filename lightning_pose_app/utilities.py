@@ -2,6 +2,8 @@ import logging
 import math
 import os
 import shlex
+import socket
+from typing import Optional
 
 import numpy as np
 from lightning.app.frontend import StreamlitFrontend as LitStreamlitFrontend
@@ -23,21 +25,54 @@ def args_to_dict(script_args: str) -> dict:
     return script_args_dict
 
 
+def is_port_in_use(port: int, host: str = '0.0.0.0') -> bool:
+    """Check if a port is in use."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind((host, port))
+            return False
+        except socket.error:
+            return True
+
+def get_available_port(start_port: int, end_port: int, host: str = '0.0.0.0') -> Optional[int]:
+    """Find first available port in range."""
+    for port in range(start_port, end_port + 1):
+        if not is_port_in_use(port, host):
+            return port
+    return None
+
 class StreamlitFrontend(LitStreamlitFrontend):
     """Provide helpful print statements for where streamlit tabs are forwarded."""
+    
+    # Class-level port tracking
+    STREAMLIT_PORTS = {
+        'frame': range(7504, 7506),  # Try ports 7504-7505 for frame
+        'video': range(7506, 7508),  # Try ports 7506-7507 for video
+        'other': range(7508, 7510),  # Try ports 7508-7509 for other
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def start_server(self, *args, **kwargs):
-        # Override port and host
+        # Override host
         kwargs['host'] = '0.0.0.0'
+        
+        # Determine port range based on instance type
         if 'frame' in str(self):
-            kwargs['port'] = 7504
+            port_range = self.STREAMLIT_PORTS['frame']
         elif 'video' in str(self):
-            kwargs['port'] = 7505
+            port_range = self.STREAMLIT_PORTS['video']
         else:
-            kwargs['port'] = 7506
+            port_range = self.STREAMLIT_PORTS['other']
+            
+        # Find available port
+        port = get_available_port(port_range.start, port_range.stop - 1)
+        if port is None:
+            _logger.warning(f"No ports available in range {port_range}. Using default port.")
+            port = 7506  # Fallback to default
+            
+        kwargs['port'] = port
         super().start_server(*args, **kwargs)
         _logger.info(f"Running streamlit on http://{kwargs['host']}:{kwargs['port']}")
 
