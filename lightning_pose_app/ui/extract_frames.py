@@ -59,9 +59,9 @@ PROCEED_FMT = "<p style='font-family:sans-serif; color:Green;'>%s</p>"
 
 class ExtractFramesWork(LightningWork):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, host='0.0.0.0', port='7502', *args, **kwargs):
 
-        super().__init__(*args, **kwargs)
+        super().__init__(hsot=host, port=port, *args, **kwargs)
 
         # record progress of computationally-intensive steps (like reading video frames)
         self.progress = 0.0

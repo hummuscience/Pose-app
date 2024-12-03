@@ -70,15 +70,14 @@ class LitPoseApp(LightningFlow):
         )
 
         # extract frames tab (flow + work)
-        self.extract_ui = ExtractFramesUI(host='0.0.0.0', port=7502)
+        self.extract_ui = ExtractFramesUI()
 
         # training tab (flow + work)
-        self.train_ui = TrainUI(host='0.0.0.0', port=7503)
+        self.train_ui = TrainUI()
 
         # fiftyone tab (work)
         self.fiftyone = LitBashWork(
             cloud_compute=CloudCompute("default"),
-            host='0.0.0.0', port=7503
         )
 
         # streamlit tabs (flow + work)
