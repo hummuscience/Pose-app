@@ -71,7 +71,7 @@ MIN_TRAIN_FRAMES = 20
 
 class LitPose(LightningWork):
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, host="0.0.0.0", port=None, **kwargs) -> None:
 
         super().__init__(*args, host=host, port=port, **kwargs)
 
