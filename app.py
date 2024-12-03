@@ -89,9 +89,11 @@ class LitPoseApp(LightningFlow):
         # training tab (flow + work)
         self.train_ui = TrainUI()
 
-        # fiftyone tab (work)
+        # fiftyone tab (work) 
         self.fiftyone = LitBashWork(
             cloud_compute=CloudCompute("default"),
+            host=self.host,
+            port=self.ports["fiftyone"]
         )
 
         # streamlit tabs (flow + work) 
@@ -105,6 +107,8 @@ class LitPoseApp(LightningFlow):
         # tensorboard tab (work)
         self.tensorboard = LitBashWork(
             cloud_compute=CloudCompute("default"),
+            host=self.host, 
+            port=self.ports["tensorboard"]
         )
 
         # label studio (flow + work)
