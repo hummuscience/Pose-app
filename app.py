@@ -54,6 +54,20 @@ class LitPoseApp(LightningFlow):
         # paths
         # -----------------------------
         self.data_dir = "/data"  # # relative to Pose-app root
+        
+        # -----------------------------
+        # service configuration 
+        # -----------------------------
+        self.host = "0.0.0.0"
+        self.ports = {
+            "streamlit_frame": 7502,
+            "streamlit_video": 7503,
+            "streamlit_video_player": 7504,
+            "streamlit_project": 7505,
+            "label_studio": 7506,
+            "tensorboard": 7507,
+            "fiftyone": 7508
+        }
 
         # load default config and pass to project manager
         config_dir = os.path.join(LIGHTNING_POSE_DIR, "scripts", "configs")
@@ -80,10 +94,13 @@ class LitPoseApp(LightningFlow):
             cloud_compute=CloudCompute("default"),
         )
 
-        # streamlit tabs (flow + work)
-        self.streamlit_frame = StreamlitAppLightningPose(app_type="frame")
-        self.streamlit_video = StreamlitAppLightningPose(app_type="video")
-        self.streamlit_video_player = StreamlitVideoViewer()
+        # streamlit tabs (flow + work) 
+        self.streamlit_frame = StreamlitAppLightningPose(
+            app_type="frame", host=self.host, port=self.ports["streamlit_frame"])
+        self.streamlit_video = StreamlitAppLightningPose(
+            app_type="video", host=self.host, port=self.ports["streamlit_video"])
+        self.streamlit_video_player = StreamlitVideoViewer(
+            host=self.host, port=self.ports["streamlit_video_player"])
 
         # tensorboard tab (work)
         self.tensorboard = LitBashWork(
@@ -93,6 +110,8 @@ class LitPoseApp(LightningFlow):
         # label studio (flow + work)
         self.label_studio = LitLabelStudio(
             database_dir=os.path.join(self.data_dir, LABELSTUDIO_DB_DIR),
+            host=self.host,
+            port=self.ports["label_studio"],
         )
 
         self.import_demo_count = 0
@@ -262,12 +281,12 @@ class LitPoseApp(LightningFlow):
 
     def start_tensorboard(self, logdir):
         """run tensorboard"""
-        cmd = f"tensorboard --logdir {logdir} --host 0.0.0.0 --port 7502 --reload_interval 30"
+        cmd = f"tensorboard --logdir {logdir} --host {self.host} --port {self.ports['tensorboard']} --reload_interval 30"
         self.tensorboard.run(cmd, wait_for_exit=False, cwd=os.getcwd())
 
     def start_fiftyone(self):
         """run fiftyone"""
-        cmd = "fiftyone app launch --address 0.0.0.0 --port 7503 --remote --wait -1"
+        cmd = f"fiftyone app launch --address {self.host} --port {self.ports['fiftyone']} --remote --wait -1"
         self.fiftyone.run(cmd, wait_for_exit=False, cwd=os.getcwd())
 
     def update_trained_models_list(self, timer):
