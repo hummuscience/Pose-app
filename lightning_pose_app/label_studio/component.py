@@ -21,13 +21,15 @@ label_studio_venv = None
 
 class LitLabelStudio(LightningFlow):
 
-    def __init__(self, *args, database_dir="/data", proj_dir=None, **kwargs) -> None:
+    def __init__(self, *args, database_dir="/data", proj_dir=None, host="0.0.0.0", port=7506, **kwargs) -> None:
 
         super().__init__(*args, **kwargs)
 
         self.label_studio = LitBashWork(
             cloud_compute=CloudCompute("default"),
         )
+        self.host = host
+        self.port = port
         self.counts = {
             "start_label_studio": 0,
             "create_new_project": 0,
@@ -70,7 +72,7 @@ class LitLabelStudio(LightningFlow):
 
         # start label-studio
         self.label_studio.run(
-            "label-studio start --no-browser --internal-host $host --port $port --log-level ERROR",
+            f"label-studio start --no-browser --internal-host {self.host} --port {self.port} --log-level ERROR",
             venv_name=label_studio_venv,
             wait_for_exit=False,
             env={
