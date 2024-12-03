@@ -336,12 +336,14 @@ class ExtractFramesWork(LightningWork):
 class ExtractFramesUI(LightningFlow):
     """UI to manage projects - create, load, modify."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, host="0.0.0.0", port=7505, **kwargs):
 
         super().__init__(*args, **kwargs)
 
         # updated externally by parent app
         self.proj_dir = None
+        self.host = host
+        self.port = port
 
         # works will be allocated once videos are uploaded
         self.works_dict = Dict()

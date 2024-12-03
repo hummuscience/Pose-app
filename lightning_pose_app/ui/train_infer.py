@@ -477,10 +477,14 @@ class TrainUI(LightningFlow):
         allow_context: bool = True,
         max_epochs_default: int = 300,
         rng_seed_data_pt_default: int = 0,
+        host: str = "0.0.0.0",
+        port: int = 7509,
         **kwargs
     ) -> None:
 
         super().__init__(*args, **kwargs)
+        self.host = host
+        self.port = port
 
         # updated externally by parent app
         self.trained_models = []

@@ -66,7 +66,9 @@ class LitPoseApp(LightningFlow):
             "streamlit_project": 7505,
             "label_studio": 7506,
             "tensorboard": 7507,
-            "fiftyone": 7508
+            "fiftyone": 7508,
+            "streamlit_extract": 7509,
+            "streamlit_train": 7510
         }
 
         # load default config and pass to project manager
@@ -84,10 +86,12 @@ class LitPoseApp(LightningFlow):
         )
 
         # extract frames tab (flow + work)
-        self.extract_ui = ExtractFramesUI()
+        self.extract_ui = ExtractFramesUI(
+            host=self.host, port=self.ports["streamlit_extract"])
 
         # training tab (flow + work)
-        self.train_ui = TrainUI()
+        self.train_ui = TrainUI(
+            host=self.host, port=self.ports["streamlit_train"])
 
         # fiftyone tab (work) 
         self.fiftyone = LitBashWork(
