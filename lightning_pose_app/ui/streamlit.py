@@ -9,13 +9,15 @@ from lightning_pose_app.bashwork import LitBashWork
 class StreamlitAppLightningPose(LightningFlow):
     """UI to run Streamlit labeled frame app."""
 
-    def __init__(self, *args, app_type, **kwargs):
+    def __init__(self, *args, app_type, host="0.0.0.0", port=7502, **kwargs):
 
         super().__init__(*args, **kwargs)
 
         self.work = LitBashWork(
             cloud_compute=CloudCompute("default"),
         )
+        self.host = host
+        self.port = port
 
         # choose labeled frame or video option
         if app_type == "frame":
@@ -50,7 +52,7 @@ class StreamlitAppLightningPose(LightningFlow):
                 model_dir_args += " --require_tb_logs"
 
             cmd = f"streamlit run lightning_pose/apps/{self.script_name}" \
-                + " --server.address $host --server.port $port --server.headless true" \
+                + f" --server.address {self.host} --server.port {self.port} --server.headless true" \
                 + " -- " \
                 + " " + model_dir_args
 

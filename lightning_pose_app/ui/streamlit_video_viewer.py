@@ -14,12 +14,14 @@ from lightning_pose_app.utilities import StreamlitFrontend, abspath
 class StreamlitVideoViewer(LightningFlow):
     """UI to run Streamlit video viewer."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, host="0.0.0.0", port=7502, **kwargs):
 
         super().__init__(*args, **kwargs)
 
         # params updated externally by top-level flow
         self.proj_dir = None
+        self.host = host 
+        self.port = port
 
     def run(self, action, **kwargs):
         pass
