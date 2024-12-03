@@ -73,7 +73,7 @@ class LitPose(LightningWork):
 
     def __init__(self, *args, **kwargs) -> None:
 
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, host=host, port=port, **kwargs)
 
         # record progress of computationally-intensive steps (like training and inference)
         self.progress = 0.0
@@ -668,6 +668,8 @@ class TrainUI(LightningFlow):
                     self.works_dict[worker_key] = LitPose(
                         cloud_compute=CloudCompute("gpu"),
                         parallel=is_running_in_cloud(),
+                        host=self.host,
+                        port=None,  # Let Lightning assign a port
                     )
                 status = self.st_infer_status[worker_key]
                 if status == "initialized" or status == "active":

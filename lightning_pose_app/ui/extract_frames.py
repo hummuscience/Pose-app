@@ -59,9 +59,9 @@ PROCEED_FMT = "<p style='font-family:sans-serif; color:Green;'>%s</p>"
 
 class ExtractFramesWork(LightningWork):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, host="0.0.0.0", port=None, **kwargs):
 
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, host=host, port=port, **kwargs)
 
         # record progress of computationally-intensive steps (like reading video frames)
         self.progress = 0.0
@@ -389,6 +389,8 @@ class ExtractFramesUI(LightningFlow):
             if video_key not in self.works_dict.keys():
                 self.works_dict[video_key] = ExtractFramesWork(
                     cloud_compute=CloudCompute("default"),
+                    host=self.host,
+                    port=None,  # Let Lightning assign a port
                 )
             status = self.st_extract_status[video_file]
             if status == "initialized" or status == "active":

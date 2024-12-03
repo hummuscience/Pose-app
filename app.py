@@ -93,7 +93,7 @@ class LitPoseApp(LightningFlow):
         self.train_ui = TrainUI(
             host=self.host, port=self.ports["streamlit_train"])
 
-        # fiftyone tab (work) 
+        # fiftyone tab (work)
         self.fiftyone = LitBashWork(
             cloud_compute=CloudCompute("default"),
             host=self.host,
@@ -111,7 +111,7 @@ class LitPoseApp(LightningFlow):
         # tensorboard tab (work)
         self.tensorboard = LitBashWork(
             cloud_compute=CloudCompute("default"),
-            host=self.host, 
+            host=self.host,
             port=self.ports["tensorboard"]
         )
 
